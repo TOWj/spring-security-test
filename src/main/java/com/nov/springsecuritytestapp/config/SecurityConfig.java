@@ -8,6 +8,7 @@ import org.springframework.security.config.annotation.authentication.builders.Au
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.NoOpPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
@@ -39,18 +40,25 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .formLogin().loginPage("/auth/login")// Указываем, по какому пути будет находиться наша форма
                 .loginProcessingUrl("/process_login")// Указываем, куда были отправлены данные с формы (смотри html формы)
                 .defaultSuccessUrl("/hello", true)// Что будет происходить при успешной аутентификации
-                .failureUrl("/auth/login?error");// Если аутентификация была провалена,
+                .failureUrl("/auth/login?error")// Если аутентификация была провалена,
                                                                     // идем на ту же страницу, но с параметром error
+                .and()// Конфигурация логаута
+                .logout().logoutUrl("/logout")// Задаем url, при переходе на который будет происходить логаут
+                  //удаляем юзера из сессии и удаляем куки у юзера
+                .logoutSuccessUrl("/auth/login");// Куда переходить при успешном логауте
+                 // Спринг сам реализует всю лоигку логаута, нам нужно просто сделать кнопку на странице
+
     }
 
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
         // Этот метод настраивает аутентификацию, сам Спринг все проверяет
-        auth.userDetailsService(personDetailsService);
+        auth.userDetailsService(personDetailsService)
+                .passwordEncoder(getPasswordEncoder());// Добавляем в аутентификацию шифрование пароля
     }
 
     @Bean
     public PasswordEncoder getPasswordEncoder() {
-        // Не шифрованный пароль - deprecated
-        return NoOpPasswordEncoder.getInstance();
+        // Указываем шифровальщика)
+        return new BCryptPasswordEncoder();
     }
 }
