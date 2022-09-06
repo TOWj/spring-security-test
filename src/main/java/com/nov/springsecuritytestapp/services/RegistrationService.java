@@ -26,6 +26,9 @@ public class RegistrationService {
         String encodedPassword = passwordEncoder.encode(person.getPassword());
         person.setPassword(encodedPassword);
 
+        // Назначаем роль каждому новому юзеру
+        person.setRole("ROLE_USER");
+
         peopleRepository.save(person);
     }
 }

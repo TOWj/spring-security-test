@@ -2,8 +2,10 @@ package com.nov.springsecuritytestapp.security;
 
 import com.nov.springsecuritytestapp.models.Person;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import java.util.Collection;
+import java.util.Collections;
 
 public class PersonDetails implements UserDetails {
 
@@ -15,8 +17,9 @@ public class PersonDetails implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        //нужен для авторизации, здесь мы получаем роли
-        return null;
+        // Тут возвращаем роли каждого Person
+
+        return Collections.singletonList(new SimpleGrantedAuthority(person.getRole()));
     }
 
     @Override
