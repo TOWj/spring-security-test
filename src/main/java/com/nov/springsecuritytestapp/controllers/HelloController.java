@@ -28,7 +28,7 @@ public class HelloController {
     @GetMapping("/showUserInfo")
     public String showUserInfo() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        // Principal легко сдаункастить до нужного объекта
+        // Principal даункастим до нужного объекта
         PersonDetails personDetails = (PersonDetails) authentication.getPrincipal();
         // Теперь можно на PersonDetails вызвать метод getPerson(), чтобы получить объект пользователя
         Person person = personDetails.getPerson();
